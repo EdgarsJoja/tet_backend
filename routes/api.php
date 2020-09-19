@@ -1,6 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\V1\CurrencyController;
+use App\Http\Controllers\Api\V1\CurrencyListController;
+use App\Http\Middleware\Api;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +16,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware([Api::class])->group(function () {
+    Route::prefix('v1')->group(function () {
+        Route::prefix('currency')->group(function () {
+            Route::get('list', CurrencyListController::class);
+            Route::get('{id}', CurrencyController::class);
+        });
+    });
 });

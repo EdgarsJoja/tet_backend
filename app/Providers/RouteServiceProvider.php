@@ -72,9 +72,10 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapApiRoutes()
     {
+        // Important! Do not add "namespace" here to allow Single Action Controllers
+        // https://github.com/laravel/framework/issues/32519
         Route::prefix('api')
             ->middleware('api')
-            ->namespace($this->namespace)
             ->group(base_path('routes/api.php'));
     }
 }

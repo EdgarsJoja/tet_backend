@@ -13,8 +13,10 @@ use App\ExchangeRate\ExchangeRateValidation;
 use App\ExchangeRate\ExchangeRateValidationInterface;
 use App\Rss\ExchangeRatesFeedLoader;
 use App\Rss\ExchangeRatesFeedParser;
+use App\Rss\ExchangeRatesFeedService;
 use App\Rss\FeedLoaderInterface;
 use App\Rss\FeedParserInterface;
+use App\Rss\FeedServiceInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -33,13 +35,17 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ExchangeRateRepositoryInterface::class, ExchangeRateRepository::class);
         $this->app->bind(ExchangeRateValidationInterface::class, ExchangeRateValidation::class);
 
-        $this->app->when(RssLoad::class)
+        $this->app->when(ExchangeRatesFeedService::class)
             ->needs(FeedLoaderInterface::class)
             ->give(ExchangeRatesFeedLoader::class);
 
-        $this->app->when(RssLoad::class)
+        $this->app->when(ExchangeRatesFeedService::class)
             ->needs(FeedParserInterface::class)
             ->give(ExchangeRatesFeedParser::class);
+
+        $this->app->when(RssLoad::class)
+            ->needs(FeedServiceInterface::class)
+            ->give(ExchangeRatesFeedService::class);
     }
 
     /**

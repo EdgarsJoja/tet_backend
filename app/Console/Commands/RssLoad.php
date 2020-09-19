@@ -2,10 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Currency\CurrencyRepositoryInterface;
-use App\ExchangeRate\ExchangeRateRepositoryInterface;
-use App\Rss\FeedLoaderInterface;
-use App\Rss\FeedParserInterface;
+use App\Rss\FeedServiceInterface;
 use Illuminate\Console\Command;
 
 /**
@@ -29,45 +26,21 @@ class RssLoad extends Command
     protected $description = 'Load and save into DB latest RSS feed for Euro exchange rates';
 
     /**
-     * @var FeedLoaderInterface
+     * @var FeedServiceInterface
      */
-    protected $exchangeRatesFeedLoader;
-
-    /**
-     * @var FeedParserInterface
-     */
-    protected $exchangeRatesFeedParser;
-
-    /**
-     * @var CurrencyRepositoryInterface
-     */
-    protected $currencyRepository;
-
-    /**
-     * @var ExchangeRateRepositoryInterface
-     */
-    protected $exchangeRateRepository;
+    protected $exchangeRatesFeedService;
 
     /**
      * Create a new command instance.
      *
-     * @param FeedLoaderInterface $exchangeRatesFeedLoader
-     * @param FeedParserInterface $exchangeRatesFeedParser
-     * @param CurrencyRepositoryInterface $currencyRepository
-     * @param ExchangeRateRepositoryInterface $exchangeRateRepository
+     * @param FeedServiceInterface $exchangeRatesFeedService
      */
     public function __construct(
-        FeedLoaderInterface $exchangeRatesFeedLoader,
-        FeedParserInterface $exchangeRatesFeedParser,
-        CurrencyRepositoryInterface $currencyRepository,
-        ExchangeRateRepositoryInterface $exchangeRateRepository
+        FeedServiceInterface $exchangeRatesFeedService
     ) {
         parent::__construct();
 
-        $this->exchangeRatesFeedLoader = $exchangeRatesFeedLoader;
-        $this->exchangeRatesFeedParser = $exchangeRatesFeedParser;
-        $this->currencyRepository = $currencyRepository;
-        $this->exchangeRateRepository = $exchangeRateRepository;
+        $this->exchangeRatesFeedService = $exchangeRatesFeedService;
     }
 
     /**
@@ -77,22 +50,7 @@ class RssLoad extends Command
      */
     public function handle(): int
     {
-        $xml = $this->exchangeRatesFeedLoader->load();
-        $dataArray = $this->exchangeRatesFeedParser->parse($xml);
-
-        foreach ($dataArray as $data) {
-            if (isset($data['rates']) && is_array($data['rates'])) {
-                foreach ($data['rates'] as $currencyCode => $exchangeRate) {
-                    $currency = $this->currencyRepository->getByCode($currencyCode);
-                    $this->currencyRepository->save($currency);
-
-                    $this->exchangeRateRepository->saveCurrencyExchangeRate($currency, [
-                        'date' => $data['date'],
-                        'rate' => $exchangeRate
-                    ]);
-                }
-            }
-        }
+        $this->exchangeRatesFeedService->process();
 
         return 0;
     }

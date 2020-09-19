@@ -22,10 +22,30 @@ class Currency extends Model
     protected $fillable = ['code'];
 
     /**
+     * @var string[]
+     */
+    protected $visible = ['id', 'code'];
+
+    /**
+     * Get all corresponding exchange rates
+     *
      * @return HasMany
      */
     public function exchangeRates(): HasMany
     {
         return $this->hasMany(ExchangeRate::class);
+    }
+
+    /**
+     * Get last exchange rate by date
+     *
+     * @return ExchangeRate
+     */
+    public function lastExchangeRate(): ExchangeRate
+    {
+        /** @var ExchangeRate $exchangeRate */
+        $exchangeRate = $this->exchangeRates()->latest('date')->first();
+
+        return $exchangeRate;
     }
 }

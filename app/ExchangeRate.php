@@ -19,4 +19,9 @@ class ExchangeRate extends Model
      * @var string[]
      */
     protected $fillable = ['date', 'rate'];
+
+    /**
+     * @var string[]
+     */
+    protected $visible = ['currency_id', 'rate', 'date'];
 }

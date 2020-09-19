@@ -3,6 +3,7 @@
 namespace App\Currency;
 
 use App\Currency;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Interface CurrencyRepositoryInterface
@@ -10,6 +11,14 @@ use App\Currency;
  */
 interface CurrencyRepositoryInterface
 {
+    /**
+     * Get currency by ID
+     *
+     * @param $id
+     * @return Currency
+     */
+    public function getById($id): Currency;
+
     /**
      * Get currency object by code
      *
@@ -25,4 +34,11 @@ interface CurrencyRepositoryInterface
      * @return bool
      */
     public function save(Currency $currency): bool;
+
+    /**
+     * Get list of currencies
+     *
+     * @return Collection
+     */
+    public function getList(): Collection;
 }

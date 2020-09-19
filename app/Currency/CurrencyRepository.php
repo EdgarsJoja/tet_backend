@@ -3,6 +3,7 @@
 namespace App\Currency;
 
 use App\Currency;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Class CurrencyRepository
@@ -24,7 +25,22 @@ class CurrencyRepository implements CurrencyRepositoryInterface
     }
 
     /**
+     * Get currency by ID
+     *
+     * Note: Will throw exception if such entity does not exist.
+     *
+     * @param $id
+     * @return Currency
+     */
+    public function getById($id): Currency
+    {
+        return Currency::findOrFail($id);
+    }
+
+    /**
      * Get currency object by code
+     *
+     * Note: Will return new entity instance if such doesn't exist already.
      *
      * @param string $code
      * @return Currency
@@ -49,6 +65,16 @@ class CurrencyRepository implements CurrencyRepositoryInterface
         }
 
         return false;
+    }
+
+    /**
+     * Get list of currencies
+     *
+     * @return Collection
+     */
+    public function getList(): Collection
+    {
+        return Currency::all();
     }
 }
 
