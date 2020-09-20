@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\RssLoad;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -13,18 +14,21 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        RssLoad::class
     ];
 
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param Schedule $schedule
      * @return void
      */
-    protected function schedule(Schedule $schedule)
+    protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Should be run only on ->weekdays()->at('3:15'), since RSS data is updated every weekday at 3am,
+        // but for testing/demonstration purposes it's set to run every 5 min.
+        // Cron service itself runs every minute.
+        $schedule->command('tet:rss:load')->everyFiveMinutes();
     }
 
     /**
@@ -32,7 +36,7 @@ class Kernel extends ConsoleKernel
      *
      * @return void
      */
-    protected function commands()
+    protected function commands(): void
     {
         $this->load(__DIR__.'/Commands');
 
