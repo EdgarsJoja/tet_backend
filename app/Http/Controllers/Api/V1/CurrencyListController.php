@@ -52,6 +52,7 @@ class CurrencyListController extends Controller
         $result['page_info'] = [
             'current_page' => $page,
             'page_size' => $this->getPageSize(),
+            'total_items' => $currencies->count(),
             'total_pages' => (int)ceil($currencies->count() / $this->getPageSize()),
         ];
 
