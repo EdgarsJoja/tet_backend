@@ -74,6 +74,7 @@ class CurrencyRepository implements CurrencyRepositoryInterface
      */
     public function getList(): Collection
     {
+        // @todo: Replace with query builder to avoid loading all results every time
         return Currency::all();
     }
 }
