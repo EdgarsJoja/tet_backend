@@ -49,7 +49,7 @@ class CurrencyController extends Controller
 
         try {
             $currency = $this->currencyRepository->getById($id);
-            $exchangeRates = $currency->exchangeRates()->get();
+            $exchangeRates = $currency->exchangeRates()->orderByDesc('date')->get();
 
             $result['currency'] = $currency->toArray();
             $result['exchange_rates'] = $exchangeRates->toArray();
