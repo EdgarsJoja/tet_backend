@@ -44,7 +44,7 @@ class Currency extends Model
     public function lastExchangeRate(): ExchangeRate
     {
         /** @var ExchangeRate $exchangeRate */
-        $exchangeRate = $this->exchangeRates()->latest('date')->first();
+        $exchangeRate = $this->exchangeRates()->latest('date')->firstOrNew([]);
 
         return $exchangeRate;
     }
